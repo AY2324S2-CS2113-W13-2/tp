@@ -46,7 +46,7 @@ To quickly get started with CLI-nton, follow these simple steps:
 
 CLI-nton offers a variety of features to streamline your task management process:
 
-Here are the sections for the User Guide covering the `next`, `prev`, `month`, `week`, `add`, `update`, `delete`, `priority` and `quit` commands:
+Here are the sections for the User Guide covering the `next`, `prev`, `month`, `week`, `add`, `update`, `delete`, `priority`, `mark`, `free` and `quit` commands:
 
 
 ### Moving to Next Week or Month: `next`
@@ -324,7 +324,7 @@ Format: `mark, <day number>, <taskIndex>`
 Example of usage:
 
 This is how you calendar would look like in Week View before marking a task.
-![img.png](images/BeforeMarkTaskWeekView.png
+![img.png](images/BeforeMarkTaskWeekView.png)
 
 This is how you calendar would look like in Week View after marking a task.
 ![img.png](images/AfterMarkingTaskWeekView.png)
