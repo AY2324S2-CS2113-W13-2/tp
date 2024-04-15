@@ -1,0 +1,74 @@
+@startuml
+
+participant ":MonthView" as MV
+participant "uiRenderer:UiRenderer" as UR
+participant ":TaskManager" as TM
+
+
+MV -> MV: printView(taskManager)
+activate MV
+MV -> UR: printMonthHeader(YearMonth.from(startOfView))
+activate UR
+UR --> MV
+deactivate UR
+MV -> UR: printWeekHeader(startOfView, dateFormatter, true)
+activate UR
+UR -> UR: printHorizontalDivider()
+activate UR
+UR --> UR
+deactivate UR
+UR -> UR: printHeaderRow()
+activate UR
+UR --> UR
+deactivate UR
+UR -> UR: printDateRow(dateFormatter, startOfView.withDayOfMonth(1))
+activate UR
+UR --> UR
+deactivate UR
+UR -> UR: printHorizontalDivider()
+activate UR
+UR --> UR
+deactivate UR
+UR --> MV
+deactivate UR
+MV -> MV: printWeek(startOfView.withDayOfMonth(1), taskManager)
+activate MV
+MV -> UR: printDay(startOfView.withDayOfMonth(1), startOfView.withDayOfMonth(1))
+activate UR
+UR --> MV
+deactivate UR
+MV -> UR: printDay(startOfView.withDayOfMonth(1), startOfView.withDayOfMonth(1))
+activate UR
+UR --> MV
+deactivate UR
+MV -> UR: printSeparator()
+activate UR
+UR --> MV
+deactivate UR
+MV -> MV: getMaxTasksForWeek(startOfView.withDayOfMonth(1).minusDays(7), taskManager)
+activate MV
+MV -> TM: getTasksForDate(date)
+activate TM
+TM --> MV
+deactivate TM
+MV --> MV
+deactivate MV
+MV -> MV: printTasksForWeek(startOfView.withDayOfMonth(1).minusDays(7), maxTasks, taskManager)
+activate MV
+MV -> UR: printTaskForDay(dayTasks, taskIndex)
+activate UR
+UR -> UR: printTaskIcon(task)
+activate UR
+UR --> UR
+deactivate UR
+UR --> MV
+deactivate UR
+MV -> UR: printSeparator()
+activate UR
+UR --> MV
+deactivate UR
+MV --> MV
+deactivate MV
+MV --> MV
+deactivate MV
+@enduml

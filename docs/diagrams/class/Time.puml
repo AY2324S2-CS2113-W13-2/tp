@@ -1,0 +1,58 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+
+
+abstract class View {
+    # startOfView: LocalDate
+    # dateFormatter: DateTimeFormatter
+    + View(startOfView: LocalDate, dateFormatter: DateTimeFormatter)
+    + abstract printView(taskManager: TaskManager): void
+    + abstract next(): void
+    + abstract previous(): void
+    + getStartOfView(): LocalDate
+    + getStartOfMonth(): LocalDate
+    + findDateFromNumber(dayInt: int): LocalDate
+}
+
+class MonthView extends View {
+    - logger : Logger {static}
+    - NUMBER_OF_DAYS_IN_WEEK : int {static}
+    - uiRenderer : UiRenderer
+
+    + MonthView(startOfMonth: LocalDate, dateFormatter: DateTimeFormatter)
+    + printView(taskManager: TaskManager): void
+    - printMonthHeader(yearMonth: YearMonth): void
+    - printWeek(currentDate: LocalDate, taskManager: TaskManager): void
+    - printDay(currentDate: LocalDate, startOfMonth: LocalDate): void
+    - printDayNumber(currentDate: LocalDate): void
+    - getMaxTasksForWeek(weekStart: LocalDate, taskManager: TaskManager): int
+    - printTasksForWeek(weekStart: LocalDate, maxTasks: int, taskManager: TaskManager): void
+    - printTaskForDay(dayTasks: List<Task>, taskIndex: int): void
+    - printTaskIcon(task: Task): void
+    - getTaskIcon(task: Task): String
+    - getColoredTaskIcon(task: Task, color: String): String
+    + next(): void
+    + previous(): void
+}
+
+class WeekView extends View {
+    + WeekView(startOfWeek: LocalDate, dateFormatter: DateTimeFormatter)
+    + printView(taskManager: TaskManager): void
+    + next(): void
+    + previous(): void
+    + getStartOfWeek(): LocalDate
+    + getDateForDay(dayOfWeek: int): LocalDate
+}
+
+class DateUtils {
+    - NUMBER_OF_DAYS_IN_WEEK: int = 7
+    + getStartOfWeek(date: LocalDate): LocalDate
+}
+
+
+
+hide circle
+
+@enduml

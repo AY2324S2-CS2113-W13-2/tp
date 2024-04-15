@@ -1,0 +1,54 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+class CommandHandler {
+    - scanner: Scanner
+    - taskManager: TaskManager
+    - weekView: WeekView
+    - monthView: MonthView
+    - inMonthView: boolean
+    + CommandHandler(scanner: Scanner, taskManager: TaskManager, weekView: WeekView, monthView: MonthView)
+    + handleCommand(): void
+    - handleNextCommand(): void
+    - handlePreviousCommand(): void
+    - handleUpdateCommand(parts: String[]): void
+    - handleAddCommand(parts: String[]): void
+    - handleDeleteCommand(parts: String[]): void
+    - handleMarkCommand(parts: String[]): void
+    - handlePriorityCommand(parts: String[]): void
+    - handleMonthCommand(): void
+    - handleWeekCommand(): void
+    - {static} printHelp(): void
+    - handleQuitCommand(): void
+}
+
+class StringParser {
+    + {static} dateFormatter: DateTimeFormatter
+    + parseDate(dateString: String): LocalDate
+    + parseTaskIndex(indexString: String): int
+    + parseTaskDescription(descriptionString: String): String
+    + parsePriorityLevel(priorityString: String): String
+    + validateAddCommand(parts: String[]): void
+    + validateUpdateCommand(parts: String[]): void
+    + validateDeleteCommand(parts: String[]): void
+    + validateMarkCommand(parts: String[]): void
+    + validatePriorityCommand(parts: String[]): void
+}
+
+class Main {
+    + main(args: String[]): void
+}
+
+Main --> CommandHandler
+Main --> TaskManager
+Main --> WeekView
+Main --> MonthView
+CommandHandler --> TaskManager
+CommandHandler --> WeekView
+CommandHandler --> MonthView
+CommandHandler ..> StringParser
+
+hide circle
+
+@enduml

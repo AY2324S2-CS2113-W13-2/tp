@@ -57,6 +57,8 @@ Below is a summary of the classes found in the Data package:
 - `TaskType` is an enumeration used in classifying the types of `Task` created.
 - `TaskPriorityLevel` is an enumeration used in classifying the priority level of a `Task`.
 
+Below is a sequence diagram that illustrates a possible sequence when the user runs CLI-nton:
+![Data Sequence Diagram](images/sequence/DataSequenceDiagram.png)
 ## UiRenderer Component
 ### API: [UiRenderer.java](https://github.com/AY2324S2-CS2113-W13-2/tp/blob/master/src/main/java/ui/UiRenderer.java)
 ![Ui Class Diagram](images/class/Ui.png)
@@ -98,7 +100,7 @@ The `printWeekBody` method displays the body of the week view, showing tasks for
 
 #### Method Signature
 ```
-public static void printWeekBody(LocalDate startOfWeek, DateTimeFormatter dateFormatter, TaskManager taskManager)
+public static void printWeekBody(LocalDate startOfWeek, TaskManager taskManager)
 ```
 
 #### Parameters
@@ -130,6 +132,30 @@ public static void printTasksInWeek(LocalDate startOfWeek, TaskManager taskManag
 ### Month View Rendering
 The month view utilizes the printWeekHeader method with the isMonthView parameter set to true, limiting the display to only include week headers without individual tasks.
 
+### printMonthView Method
+The `printView` method in the `MonthView` is responsible for rendering the month view, displaying the calendar grid and the tasks for each day.
+
+#### Method Signature
+```
+@Override
+public void printView(TaskManager taskManager)
+```
+
+#### Parameters
+- `taskManager`: The TaskManager instance containing the tasks to be displayed.
+
+#### Method Functionality
+1. Calculates the `YearMonth` and the first day of the month that falls on a Sunday.
+2. Prints the month header using the `printMonthHeader` method.
+3. Calls the `printWeekHeader` method from the `UiRenderer` to display the week header.
+4. Iterates through the weeks in the month, calling the `printWeek` method for each week.
+5. The `printWeek` method calculates the start date of the week, prints the day numbers, and then calls `printTasksForWeek` to display the tasks for that week.
+
+#### Sequence Diagram
+![MonthView Sequence Diagram](images/sequence/PrintMonthViewSequenceDiagramWithoutLogger.png)
+
+The sequence diagram above illustrates the interactions between the `m:MonthView`, `u:UiRenderer`, `t:TaskManager`, and `l:Logger` classes during the execution of the `printView` method.
+
 ### printHelp Method
 The printHelp method provides users with a list of available commands and their descriptions, aiding in navigation and task management.
 
@@ -152,6 +178,8 @@ The `View` abstract class provides a common interface for rendering and navigati
 - `printView(TaskManager taskManager)`: This method is responsible for rendering the view to the console based on the provided `TaskManager` instance.
 - `next()`: This method advances the view to the next period (e.g., next week or next month).
 - `previous()`: This method moves the view to the previous period (e.g., previous week or previous month).
+- 
+![Time.png](images/class/Time.png)
 
 The `View` class also has a protected `startOfView` field, which represents the starting date of the current view period, and a `dateFormatter` field for formatting dates.
 
@@ -179,45 +207,64 @@ The `MonthView` class extends the `View` abstract class and provides an implemen
 The `MonthView` class also provides the following private methods:
 
 - `printWeek(LocalDate current, TaskManager taskManager)`: This method prints a single week within the month view. It iterates over the days of the week and calls the `printDay` method for each day. It also prints the tasks for the week using the `printTasksForWeek` method.
-- `printDay(LocalDate current)`: This method prints the day number for a given date within the month view.
+- `printDay(LocalDate currentDate, LocalDate startOfMonth)`: This method prints the day number for a given date within the month view.
 - `getMaxTasksForWeek(LocalDate weekStart, TaskManager taskManager)`: This method calculates the maximum number of tasks for a given week by iterating over the days of the week and finding the maximum number of tasks for any day.
 - `printTasksForWeek(LocalDate weekStart, int maxTasks, TaskManager taskManager)`: This method prints the tasks for a given week within the month view. It iterates over the tasks and calls the `printTaskForDay` method for each task.
 - `printTaskForDay(List<Task> dayTasks, int taskIndex)`: This method prints a single task for a given day within the month view.
 
-### View Switching in Main
+### View Switching in CommandHandler
 
-The `Main` class is responsible for handling user input and dispatching commands to the appropriate components. It manages the switching between the week and month views based on the user's input.
+The `CommandHandler` class is responsible for handling user input and dispatching commands to the appropriate components. It manages the switching between the week and month views based on the user's input.
 
-When the user enters the `month` command, the `Main` class toggles the `inMonthView` flag and calls the `printView` method of the `MonthView` instance, rendering the month view. Similarly, when the user enters the `week` command, the `Main` class sets the `inMonthView` flag to `false` and calls the `printView` method of the `WeekView` instance, rendering the week view.
+When the user enters the `month` command, the `CommandHandler` class calls the `handleMonthCommand()` method, which toggles the `inMonthView` flag and renders the month view by calling the `printView` method of the `MonthView` instance. Similarly, when the user enters the `week` command, the `CommandHandler` class calls the `handleWeekCommand()` method, which sets the `inMonthView` flag to `false` and renders the week view by calling the `printView` method of the `WeekView` instance.
 
-The following code snippet illustrates the view switching logic in the `Main` class:
+The following code snippets illustrate the view switching logic in the `CommandHandler` class:
 
-```
-while (true) {
-    // ... (User input handling)
-
-    switch (command) {
-        case "month":
-            monthView.printView(taskManager);
-            inMonthView = !inMonthView; // Toggle month view mode
-            printWeek = false;
-            break;
-        case "week":
-            inMonthView = false;
-            break;
-        // ... (Other command handling)
-    }
-
-    if (printWeek) {
-        if (!inMonthView) {
-            weekView.printView(taskManager);
-        } else {
-            monthView.printView(taskManager);
-        }
-    }
+```java
+private void handleMonthCommand() {
+    inMonthView = true;
 }
-
 ```
+
+This `handleMonthCommand()` method sets the `inMonthView` flag to `true`, indicating that the month view should be displayed.
+
+```java
+private void handleWeekCommand() {
+    inMonthView = false;
+}
+```
+
+This `handleWeekCommand()` method sets the `inMonthView` flag to `false`, indicating that the week view should be displayed.
+
+The `handleCommand()` method in the `CommandHandler` class is responsible for rendering the appropriate view based on the `inMonthView` flag:
+
+```java
+public void handleCommand() {
+  AvatarUi.printAvatar();
+  if (!inMonthView) {
+    weekView.printView(taskManager);
+  } else {
+    monthView.printView(taskManager);
+  }
+
+  System.out.println("Enter help to learn commands");
+  String input = scanner.nextLine().trim().toLowerCase();
+  String[] parts = input.split(",\\s*");
+  String command = parts[0];
+
+  switch (command) {
+  // ...
+  case "month":
+    handleMonthCommand();
+    break;
+  case "week":
+    handleWeekCommand();
+    break;
+  // ...
+  }
+}
+```
+This method first prints the avatar using `AvatarUi.printAvatar()`, and then checks the value of the `inMonthView` flag to determine whether to call `weekView.printView(taskManager)` or `monthView.printView(taskManager)` to render the appropriate view.
 
 ## Utilities
 The `DateUtils` class provides a utility method `getStartOfWeek` that returns the start date of the week for a given date.
@@ -306,8 +353,9 @@ The `updateTask` method is responsible for modifying the details of a task based
 #### Method Signature
 
 ```
-public static void updateTask(LocalDate date, int taskIndex, String newTaskDescription, Scanner scanner)
-        throws IndexOutOfBoundsException
+public static void updateTask(LocalDate date, int taskIndex, String newTaskDescription, Scanner scanner,
+        boolean inMonthView, WeekView weekView)
+        throws IndexOutOfBoundsException, TaskManagerException {
 ```
 
 #### Parameters
@@ -499,6 +547,54 @@ For example:
 
 The `loadTasksFromFile` method reads the tasks from the file and populates the `TaskManager` with the loaded tasks.
 
+## CommandHandler Component
+
+### API: [CommandHandler.java](https://github.com/AY2324S2-CS2113-W13-2/tp/blob/master/src/main/java/commandparser/CommandHandler.java)
+
+### Overview:
+The `CommandHandler` class is responsible for parsing user input, validating commands, and delegating the appropriate actions to the corresponding components, such as `TaskManager`, `WeekView`, and `MonthView`.
+
+### How it Works:
+1. When the user enters a command, the `handleCommand()` method is called.
+2. The method first prints the avatar using the `AvatarUi.printAvatar()` method.
+3. It then checks the current view mode (`inMonthView`) and calls the appropriate `printView()` method of `WeekView` or `MonthView` to display the current calendar view.
+4. The user's input is then parsed, and the appropriate command handling method is called, such as `handleNextCommand()`, `handleAddCommand()`, `handleDeleteCommand()`, etc.
+5. Each command handling method performs the necessary validations, processes the user input, and delegates the task to the appropriate component(s).
+6. The `printHelp()` method is called when the user enters the "help" command, displaying a list of available commands.
+7. The `handleQuitCommand()` method is called when the user enters the "quit" command, which exits the application.
+
+### `handleCommand()` Method
+The `handleCommand()` method is the entry point for processing user commands. It performs the following steps:
+
+1. Prints the avatar using `AvatarUi.printAvatar()`.
+2. Determines the current view mode (`inMonthView`) and calls the appropriate `printView()` method of `WeekView` or `MonthView`.
+3. Prompts the user to enter a command and reads the input using the `scanner`.
+4. Splits the input into command parts using `,\s*` as the delimiter.
+5. Extracts the command from the first part of the input.
+6. Calls the corresponding command handling method based on the command, such as `handleNextCommand()`, `handleAddCommand()`, `handleDeleteCommand()`, etc.
+7. If the command is not recognized, it prints an error message.
+
+### Command Handling Methods
+The `CommandHandler` class provides various command handling methods, each responsible for processing a specific type of command. These methods perform the following tasks:
+
+1. **handleNextCommand()**: Advances the current view to the next week or month, depending on the current view mode.
+2. **handlePreviousCommand()**: Moves the current view to the previous week or month, depending on the current view mode.
+3. **handleUpdateCommand(String[] parts)**: Validates the update command format, extracts the necessary information (day, task index, new description), and updates the task using the `TaskManager.updateManager()` method.
+4. **handleAddCommand(String[] parts)**: Validates the add command format, extracts the necessary information (day, task type, task description), and adds the task using the `TaskManager.addManager()` method.
+5. **handleDeleteCommand(String[] parts)**: Validates the delete command format, extracts the necessary information (day, task index), and deletes the task using the `TaskManager.deleteManager()` method.
+6. **handleMarkCommand(String[] parts)**: Validates the mark command format, extracts the necessary information (day, task index), and marks the task as completed using the `TaskManager.markManager()` method.
+7. **handlePriorityCommand(String[] parts)**: Validates the priority command format, extracts the necessary information (day, task index, priority level), and sets the priority of the task using the `TaskManager.priorityManager()` method.
+8. **handleMonthCommand()**: Switches the view to the month view by calling the `monthView.printView(taskManager)` method and toggling the `inMonthView` flag.
+9. **handleWeekCommand()**: Switches the view to the week view by setting the `inMonthView` flag to `false`.
+10. **printHelp()**: Prints the help message, displaying the available commands and their descriptions.
+11. **handleQuitCommand()**: Exits the application.
+
+### UML Class Diagram for CommandHandler
+
+![CommandParser.png](images/class/CommandParser.png)
+
+The `CommandHandler` class has dependencies on the `TaskManager`, `WeekView`, `MonthView`, and `StringParser` classes. 
+The `Main` class creates instances of these classes and passes them to the `CommandHandler` constructor.
 ## Exceptions and Logging
 
 ### Exceptions
@@ -654,6 +750,7 @@ quickly create entries in their calendar.
 | v1.0    | user         | be able to edit and update any tasks I may have already added                | can correct any mistakes or update them to reflect changes in my priorities |
 | v1.0    | user         | add tasks to be displayed                                                    | can keep track of them easily and not forget them                           |
 | v1.0    | user         | remove/delete tasks that I've completed                                      | keep my tasks as up-to-date as possible                                     |
+| v1.0    | user         | be able to interact with program using just the CLI                          | can use the program with little to no mouse inputs                          |
 | v2.0    | new user     | have a quick tutorial/help page                                              | can find out how to use the program clearly                                 |
 | v2.0    | user         | be able to tag and categorize tasks and events                               | can organize my schedule more effectively                                   |
 | v2.0    | user         | add, remove and edit tasks with fewer keystrokes                             | manage my busy schedule more efficiently                                    |

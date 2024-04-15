@@ -1,0 +1,59 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor       User              as user
+participant ":Main"           as Main
+participant ":TaskManager"    as TM
+participant ":Storage"        as storage
+participant ":CommandHandler" as CH
+
+hide footbox
+
+title Sequence Diagram for Data class
+
+user -> Main ** : Start program
+Main -> TM ** : new TaskManager()
+activate TM
+
+
+TM --> Main --
+Main -> storage ++ : loadTasksFromFile\n(Storage.FILE_PATH)
+storage --> Main -- : tasksFromFile
+Main -> TM ++ : addTasksFromFile(tasksFromFile)
+TM --> Main --
+Main -> CH ** : new CommandHandler(...)
+note left: method parameters \nexcluded for clarity
+
+loop while true
+user -> CH ++ : user command
+CH -> CH ++ : handleCommand()
+    alt "add"
+        CH -> CH ++ : handleAddCommand()
+        CH -> TM ++ : addManager(...)
+        note left: method parameters\n excluded for clarity
+            return
+        return
+    else "update"
+        CH -> CH ++ : handleUpdateCommand()
+        CH -> TM ++ : updateManager(...)
+        note left: method parameters\n excluded for clarity
+            return
+        return
+    else "mark"
+        CH -> CH ++ : handleMarkCommand()
+        CH -> TM ++ : markManager(...)
+        note left: method parameters\n excluded for clarity
+            return
+        return
+    else "delete"
+        CH -> CH ++ : handleDeleteCommand()
+        CH -> TM ++ : deleteManager(...)
+        note left: method parameters\n excluded for clarity
+            return
+        return
+    else rest omitted for clarity
+    end
+    return
+return await next input
+end
+@enduml
