@@ -9,27 +9,30 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.HashMap;
-import java.util.Objects;
 
-import static data.TaskManagerException.checkIfDateHasTasks;
-import static data.MarkTaskException.checkIfTaskIndexIsValidForMarkingTask;
-import static data.SetPriorityException.checkIfPriorityIsValid;
-import static data.SetPriorityException.checkIfTaskIndexIsValidForPriority;
+import data.exceptions.MarkTaskException;
+import data.exceptions.SetPriorityException;
+import data.exceptions.TaskManagerException;
+
 import static data.TaskType.DEADLINE;
 import static data.TaskType.EVENT;
 import static data.TaskType.TODO;
-import static data.TaskManagerException.checkIfDateInFormat;
-import static data.TaskManagerException.checkIfDateTimeInFormat;
-import static data.TaskManagerException.checkIfTaskExistsInCurrentDate;
-import static data.TaskManagerException.checkIfTimeInFormat;
+import static data.exceptions.MarkTaskException.checkIfTaskIndexIsValidForMarkingTask;
+import static data.exceptions.SetPriorityException.checkIfPriorityIsValid;
+import static data.exceptions.SetPriorityException.checkIfTaskIndexIsValidForPriority;
+import static data.exceptions.TaskManagerException.checkIfDateHasTasks;
+import static data.exceptions.TaskManagerException.checkIfDateInFormat;
+import static data.exceptions.TaskManagerException.checkIfDateTimeInFormat;
+import static data.exceptions.TaskManagerException.checkIfTaskExistsInCurrentDate;
+import static data.exceptions.TaskManagerException.checkIfTimeInFormat;
 import static storage.Storage.saveTasksToFile;
 
 /**
@@ -134,7 +137,6 @@ public class TaskManager {
 
             String oldDescription = dayTasks.get(taskIndex).getName();
             String currentTaskType = dayTasks.get(taskIndex).getTaskType();
-            boolean startDateChanged = false;
 
             Task task;
             switch (currentTaskType) {
@@ -142,6 +144,7 @@ public class TaskManager {
                 task = new Todo(newTaskDescription);
                 logger.log(Level.INFO, "Updating task description from " +
                         oldDescription + " to: " + newTaskDescription);
+                dayTasks.set(taskIndex, task);
                 break;
             case "E":
                 task = updateEventTask(scanner, dayTasks, taskIndex, newTaskDescription, oldDescription);
@@ -151,10 +154,6 @@ public class TaskManager {
                 break;
             default:
                 throw new IllegalArgumentException("Invalid task type");
-            }
-
-            if (!startDateChanged) {
-                dayTasks.set(taskIndex, task);
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -175,6 +174,8 @@ public class TaskManager {
     public static Task updateEventTask(Scanner scanner, List<Task> dayTasks,
             int taskIndex, String newTaskDescription, String oldDescription) throws TaskManagerException {
         Event oldEvent = (Event) dayTasks.get(taskIndex);
+
+
         System.out.println("Do you want to update the start and end dates and times? (yes/no)");
         String eventResponse = scanner.nextLine().trim().toLowerCase();
         if (eventResponse.equals("yes")) {
@@ -190,6 +191,10 @@ public class TaskManager {
             Task task = new Event(newTaskDescription, newDatesAndTimes[0], newDatesAndTimes[1], newDatesAndTimes[2],
                     newDatesAndTimes[3]);
 
+            tasks.computeIfAbsent(LocalDate.parse(newDatesAndTimes[0], DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    k -> new ArrayList<>()).add(task);
+            dayTasks.remove(taskIndex);
+
             updateEventLogging(newTaskDescription, oldDescription, oldEvent, newDatesAndTimes);
             return task;
         } else {
@@ -198,6 +203,7 @@ public class TaskManager {
 
             logger.log(Level.INFO, "Updating task description from " +
                     oldDescription + " to: " + newTaskDescription);
+            dayTasks.set(taskIndex, task);
             return task;
         }
     }
@@ -222,6 +228,10 @@ public class TaskManager {
             String[] newDatesAndTimes = scanner.nextLine().trim().split(" ");
             Task task = new Deadline(newTaskDescription, newDatesAndTimes[0], newDatesAndTimes[1]);
 
+            tasks.computeIfAbsent(LocalDate.parse(newDatesAndTimes[0], DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    k -> new ArrayList<>()).add(task);
+            dayTasks.remove(taskIndex);
+
             logger.log(Level.INFO, "Updating task description from " +
                     oldDescription + " to: " + newTaskDescription);
             logger.log(Level.INFO, "Updating task deadline date from " + oldDeadline.getByDate() + " to: "
@@ -234,6 +244,8 @@ public class TaskManager {
 
             logger.log(Level.INFO, "Updating task description from " +
                     oldDescription + " to: " + newTaskDescription);
+
+            dayTasks.set(taskIndex, task);
             return task;
         }
     }
@@ -334,13 +346,6 @@ public class TaskManager {
 
         // Convert the day to a LocalDate
         LocalDate date;
-        // Convert the dayString to date range
-        String[] dates = new String[2];
-        if (day.contains("-")) {
-            dates = day.split("-");
-        } else {
-            dates[0] = day;
-        }
 
         // Convert dayString to int
         int dayInt = Integer.parseInt(day);
@@ -721,26 +726,6 @@ public class TaskManager {
         }
     }
 
-    //@@author
-    /**
-     * Lists task of the input date.
-     *
-     * @param taskManager Hashmap of tasks.
-     * @param date Date that's prompted by user.
-     * @param message Message to be prompted to the user.
-     * @throws TaskManagerException If not in correct week/month view.
-     */
-    private static void listTasksAtDate(TaskManager taskManager, LocalDate date, String message)
-            throws TaskManagerException {
-        List<Task> dayTasks = taskManager.getTasksForDate(date);
-        checkIfDateHasTasks(dayTasks);
-
-        System.out.println(message);
-        for (int i = 0; i < dayTasks.size(); i++) {
-            System.out.println((i + 1) + ". " + dayTasks.get(i).getName());
-        }
-    }
-
     /**
      * Prompts user for task description and deletes task from hashmap and tasks.txt file.
      *
@@ -851,7 +836,7 @@ public class TaskManager {
 
                 // Add free time slot before the event
                 if (Duration.between(lastEndTime, eventStartTime).toMinutes() > 0) {
-                    freeTimeSlots.add(lastEndTime.toString() + " - " + eventStartTime.toString());
+                    freeTimeSlots.add(lastEndTime + " - " + eventStartTime);
                 }
 
                 // Update the last end time
@@ -861,7 +846,7 @@ public class TaskManager {
 
         // Add remaining time of the day to free slots only if lastEndTime is not endOfDay
         if (!lastEndTime.equals(endOfDay) && Duration.between(lastEndTime, endOfDay).toMinutes() > 0) {
-            freeTimeSlots.add(lastEndTime.toString() + " - " + endOfDay.toString());
+            freeTimeSlots.add(lastEndTime + " - " + endOfDay.toString());
         }
 
         return freeTimeSlots;

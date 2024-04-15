@@ -1,6 +1,8 @@
-package data;
+package data.exceptions;
 
 import java.util.List;
+
+import data.Task;
 
 /**
  * Represents an exception that occurs when marking a task.

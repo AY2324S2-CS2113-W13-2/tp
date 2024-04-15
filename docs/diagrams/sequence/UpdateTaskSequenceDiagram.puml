@@ -1,0 +1,85 @@
+@startuml
+participant ":TaskManager" as TaskManager
+participant ":Task" as Task
+participant ":Todo" as Todo
+participant ":Event" as Event
+participant ":Deadline" as Deadline
+participant ":Scanner" as Scanner
+
+hnote over TaskManager : updateTask(LocalDate date, int taskIndex, String newTaskDescription, Scanner scanner, boolean inMonthView, WeekView weekView)
+
+TaskManager -> Task : dayTasks.get(taskIndex)
+activate Task
+
+Task -> TaskManager : getName()
+activate TaskManager
+
+Task -> TaskManager : getTaskType()
+deactivate Task
+
+alt currentTaskType == "T"
+    TaskManager -> Todo : new Todo(newTaskDescription)
+    activate Todo
+    TaskManager -> Task : dayTasks.set(taskIndex, Todo)
+    deactivate Todo
+else currentTaskType == "E"
+    hnote over TaskManager : updateEventTask(Scanner, dayTasks, taskIndex, newTaskDescription, oldDescription)
+    TaskManager -> Scanner : nextLine()
+    activate Scanner
+    Scanner -> TaskManager : eventResponse
+    deactivate Scanner
+    alt eventResponse == "yes"
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newStartDate
+        deactivate Scanner
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newEndDate
+        deactivate Scanner
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newStartTime
+        deactivate Scanner
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newEndTime
+        deactivate Scanner
+        TaskManager -> Event : new Event(name, newStartDate, newEndDate, newStartTime, newEndTime)
+        activate Event
+        TaskManager -> Task : dayTasks.set(taskIndex, Event)
+        deactivate Event
+    else
+        TaskManager -> Event : new Event(name, oldStartDate, oldEndDate, oldStartTime, oldEndTime)
+        activate Event
+        TaskManager -> Task : dayTasks.set(taskIndex, Event)
+        deactivate Event
+    end
+else currentTaskType == "D"
+    hnote over TaskManager : updateDeadlineTask(Scanner, dayTasks, taskIndex, newTaskDescription, oldDescription)
+    TaskManager -> Scanner : nextLine()
+    activate Scanner
+    Scanner -> TaskManager : deadlineResponse
+    deactivate Scanner
+    alt deadlineResponse == "yes"
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newByDate
+        deactivate Scanner
+        TaskManager -> Scanner : nextLine()
+        activate Scanner
+        Scanner -> TaskManager : newByTime
+        deactivate Scanner
+        TaskManager -> Deadline : new Deadline(name, newByDate, newByTime)
+        activate Deadline
+        TaskManager -> Task : dayTasks.set(taskIndex, Deadline)
+        deactivate Deadline
+    else
+        TaskManager -> Deadline : new Deadline(name, byDate, byTime)
+        activate Deadline
+        TaskManager -> Task : dayTasks.set(taskIndex, Deadline)
+        deactivate Deadline
+    end
+end
+
+@enduml

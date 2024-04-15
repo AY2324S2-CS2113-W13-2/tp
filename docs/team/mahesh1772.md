@@ -1,5 +1,12 @@
 # Sivagnanam Maheshwaran - Project Portfolio Page
 
+Module: CS2113 - Software Engineering and OOP
+
+My contributions for the Team Project (tp) CLI-nton will be outlined in this page! 
+
+Our project: CLI-nton, a powerful task management application designed to help you stay organized and productive. With a simple command-line interface, CLI-nton makes it easy to manage your tasks, whether they're todos, deadlines, or events.
+
+ClI-nton is a idea that was brainstormed by the team as a whole which has given us ample opportunities to grow as software engineers!
 ## Overview
 
 As a dedicated software developer, I have made significant contributions to the task management application, focusing on the user interface and core functionalities. My work includes the development of the `WeekView` and `MonthView` classes, which are central to the application's ability to display tasks in a clear and organized manner. Additionally, I have implemented the `CommandHandler` and `StringParser` classes, which are pivotal in processing user input and executing commands. My efforts also extend to enhancing the `Ui Renderer` class to support the new features I introduced.
@@ -37,6 +44,10 @@ As a dedicated software developer, I have made significant contributions to the 
 - Documented the architecture and design decisions for the `WeekView` and `MonthView` classes, including their integration with the `Ui Renderer`.
 - Detailed the implementation of the `CommandHandler` and `StringParser`, providing insights into the command processing workflow and interaction with other components.
 - Included diagrams to illustrate the structure and relationships between the classes I developed.
+
+### Contributions to team-based tasks:
+- Conducted rigorous testing of the application to identify and resolve various edge cases and corner cases, ensuring the robustness and reliability of the system.
+- Participated actively in team discussions and code reviews, providing valuable feedback and suggestions to improve the codebase.
 
 ### Reflection
 My involvement in this project has been a profound learning experience, sharpening my skills in UI/UX design, command-line interfaces, and software architecture. The challenges I faced pushed me to innovate and deliver features that significantly improve the user experience. I am eager to continue contributing to the project's success and evolution.

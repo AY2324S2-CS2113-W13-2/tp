@@ -347,6 +347,36 @@ This is how you calendar would look like in Week View after setting a task's pri
 ![img.png](images/AfterSetPriorityWeekView.png)
 
 
+### Identifying Free Times: `free`
+
+The `free` feature enables users to identify and utilize their available time slots effectively. This section provides instructions on how to use the `free` feature to manage your schedule efficiently.
+
+Format: `free, <day>`
+
+- `<day>`: Specifies the day of the month for which the user wants to identify free time slots.
+
+#### Usage Example
+
+Here's an example demonstrating the usage of the `free` feature:
+
+1. Identifying Free Times for a Specific Day:
+
+   For instance, to identify free time slots for the 20th day of the month:
+
+   ```
+   free, 20
+   ```
+
+#### Output
+
+![Free-Times-Example.png](images/Free-Times-Example.png)
+
+#### Error Handling
+
+The application will handle errors in case the specified day is invalid or if there are any other issues encountered during the process.
+
+By following these instructions, users can efficiently utilize the `free` feature to optimize their schedules and manage their time effectively.
+
 ### Quitting the Application: `quit`
 
 The `quit` command allows you to exit the CLI-nton application.

@@ -1,7 +1,6 @@
 //@@author kyhjonathan
 package data.exceptions;
 
-import data.StorageFileException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

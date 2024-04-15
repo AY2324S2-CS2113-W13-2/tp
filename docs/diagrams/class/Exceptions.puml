@@ -2,48 +2,55 @@
 
 skinparam classAttributeIconSize 0
 
-
 class TaskManagerException extends Exception {
-    + NOT_CURRENT_WEEK_MESSAGE : String
-    + NOT_CURRENT_MONTH_MESSAGE : String
-    + INVALID_DATE_FORMAT_MESSAGE : String
-    + INVALID_TIME_FORMAT_MESSAGE : String
-    + NO_TASKS_MESSAGE : String
-    + START_DATE_AFTER_END_DATE_MESSAGE : String
-    - START_TIME_AFTER_END_TIME_MESSAGE : String
-    + TaskManagerException(errorMessage : String)
-    + checkIfDateTimeInFormat(dateTime : String) : void
-    + checkIfDateInFormat(date : String) : void
-    + checkIfTimeInFormat(time : String) : void
-    + checkIfDateInCurrentWeek(date : LocalDate, weekView : WeekView) : void
-    + checkIfValidDate(date : String) : void
-    + checkIfValidTime(time : String) : void
-    + checkIfDateInCurrentMonth(date : LocalDate) : void
-    + checkIfDateHasTasks(dayTasks : List<Task>) : void
-    + checkIfStartDateBeforeEndDate(startDate : String, endDate : String) : void
-    + checkIfStartTimeBeforeEndTime(startTime : String, endTime : String) : void
-    + checkDateAndTimeValidity(weekView : WeekView, inMonthView : boolean, startDate : String, startTime : String) : void
+
+{static} + NOT_CURRENT_WEEK_MESSAGE : String
+{static} + NOT_CURRENT_MONTH_MESSAGE : String
+{static} + NO_TASKS_MESSAGE : String
+
+
++ TaskManagerException(errorMessage : String)
+
+{static} + checkIfDateTimeInFormat(dateTime : String) : void
+{static} + checkIfDateInFormat(date : String) : void
+{static} + checkIfTimeInFormat(time : String) : void
+{static} + checkIfDateInCurrentWeek(date : LocalDate, weekView : WeekView) : void
+{static} + checkIfTaskExistsInCurrentDate(dayTasks: List<Task>, index: int) : void
+{static} + checkIfDateInCurrentMonth(date : LocalDate) : void
+{static} + checkIfDateHasTasks(dayTasks : List<Task>) : void
+
 }
 
 class MarkTaskException extends TaskManagerException {
-    + TASK_INDEX_OUT_OF_RANGE_FOR_DAY_WITH_TASKS_MESSAGE : String
-    + TASK_INDEX_WITH_NO_TASKS_MESSAGE : String
-    + MarkTaskException(errorMessage : String)
-    + checkIfTaskIndexIsValidForMarkingTask(dayTasks : List<Task>, taskIndex : int) : void
+
+{static} + TASK_INDEX_OUT_OF_RANGE_FOR_DAY_WITH_TASKS_MESSAGE : String
+{static} + TASK_INDEX_WITH_NO_TASKS_MESSAGE : String
+
++ MarkTaskException(errorMessage : String)
+
+{static} + checkIfTaskIndexIsValidForMarkingTask(dayTasks : List<Task>, taskIndex : int) : void
+
 }
 
 class SetPriorityException extends TaskManagerException {
-    + TASK_INDEX_OUT_OF_RANGE_FOR_DAY_WITH_TASKS_MESSAGE : String
-    + TASK_INDEX_WITH_NO_TASKS_MESSAGE : String
-    + INVALID_PRIORITY_MESSAGE : String
-    + SetPriorityException(errorMessage : String)
-    + checkIfTaskIndexIsValidForPriority(dayTasks : List<Task>, taskIndex : int) : void
-    + checkIfPriorityIsValid(priority : String) : void
+
+{static} + TASK_INDEX_OUT_OF_RANGE_FOR_DAY_WITH_TASKS_MESSAGE : String
+{static} + TASK_INDEX_WITH_NO_TASKS_MESSAGE : String
+{static} + INVALID_PRIORITY_MESSAGE : String
+
++ SetPriorityException(errorMessage : String)
+
+{static} + checkIfTaskIndexIsValidForPriority(dayTasks : List<Task>, taskIndex : int) : void
+{static} + checkIfPriorityIsValid(priority : String) : void
+
 }
 
 class StorageFileException extends Exception {
-    + StorageFileException(errorMessage : String)
-    + checkStorageTextDateFormat(date : String) : void
+
++ StorageFileException(errorMessage : String)
+
+{static} + checkStorageTextDateFormat(date : String) : void
+
 }
 
 hide circle

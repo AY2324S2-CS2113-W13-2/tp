@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # reset saved file from previous run
-if [ -e "save/tasks.txt" ]
+if [ -e "save/clintonData.txt" ]
 then 
-    rm save/tasks.txt
+    rm save/clintonData.txt
 fi
 
 # delete output from previous run
@@ -21,9 +21,9 @@ else
 fi
 
 # reset saved file from previous run
-if [ -e "save/tasks.txt" ]
+if [ -e "save/clintonData.txt" ]
 then 
-    rm save/tasks.txt
+    rm save/clintonData.txt
 fi
 
 # run the program, feed commands from input.txt file and redirect the output to the EXPECTED.TXT

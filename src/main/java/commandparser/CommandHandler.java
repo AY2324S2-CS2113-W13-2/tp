@@ -1,7 +1,7 @@
 package commandparser;
 
 import data.TaskManager;
-import data.TaskManagerException;
+import data.exceptions.TaskManagerException;
 import time.MonthView;
 import time.WeekView;
 import ui.AvatarUi;

@@ -3,7 +3,7 @@ package ui;
 import data.Task;
 import data.TaskManager;
 import data.TaskType;
-import data.TaskManagerException;
+import data.exceptions.TaskManagerException;
 import time.DateUtils;
 
 import org.junit.jupiter.api.Test;

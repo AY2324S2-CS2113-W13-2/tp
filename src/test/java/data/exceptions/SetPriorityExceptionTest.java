@@ -1,9 +1,7 @@
 package data.exceptions;
 
-import data.SetPriorityException;
 import data.Task;
 import data.TaskManager;
-import data.TaskManagerException;
 import data.TaskType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

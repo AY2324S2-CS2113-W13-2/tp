@@ -3,7 +3,7 @@ package seedu.duke;
 import commandparser.CommandHandler;
 import data.Task;
 import data.TaskManager;
-import data.TaskManagerException;
+import data.exceptions.TaskManagerException;
 import log.FileLogger;
 import storage.Storage;
 import time.DateUtils;

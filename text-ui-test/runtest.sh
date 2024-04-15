@@ -7,9 +7,9 @@ then
 fi
 
 # reset saved file from previous run
-if [ -e "save/tasks.txt" ]
+if [ -e "save/clintonData.txt" ]
 then 
-    rm save/tasks.txt
+    rm save/clintonData.txt
 fi
 
 ./gradlew clean shadowJar

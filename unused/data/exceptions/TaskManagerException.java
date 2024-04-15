@@ -72,6 +72,22 @@ public class TaskManagerException extends Exception {
     }
 
     /**
+     * Checks if the provided string is a valid date in the format "dd/MM/yyyy".
+     * Throws a TaskManagerException if the date is not valid.
+     *
+     * @param date The date string to be checked.
+     * @throws TaskManagerException If the date string is not a valid date in the format "dd/MM/yyyy".
+     */
+    public static void checkIfValidDate(String date) throws TaskManagerException {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new TaskManagerException(INVALID_DATE_FORMAT_MESSAGE);
+        }
+    }
+
+    /**
      * Checks the validity of the provided date and time.
      * The date is checked for its format and whether it falls within the current week or month.
      * The time is checked for its format.

@@ -1,10 +1,10 @@
-package data;
+package data.exceptions;
+
+import data.Task;
 
 import time.WeekView;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class TaskManagerException extends Exception {
@@ -13,10 +13,6 @@ public class TaskManagerException extends Exception {
             "The date must be within the current week. Please try again.";
     public static final String NOT_CURRENT_MONTH_MESSAGE =
             "The date must be within the current month. Please try again.";
-    public static final String INVALID_DATE_FORMAT_MESSAGE =
-            "Invalid date format. Please enter a valid date in the format: dd/MM/yyyy";
-    public static final String INVALID_TIME_FORMAT_MESSAGE =
-            "Invalid time format. Please enter a valid time in the format: HH:mm";
     public static final String NO_TASKS_MESSAGE =
             "There are no tasks on this date. Please try again.";
 
@@ -79,24 +75,6 @@ public class TaskManagerException extends Exception {
             throw new TaskManagerException(NOT_CURRENT_WEEK_MESSAGE);
         }
     }
-
-    /**
-     * Checks if the provided string is a valid date in the format "dd/MM/yyyy".
-     * Throws a TaskManagerException if the date is not valid.
-     *
-     * @param date The date string to be checked.
-     * @throws TaskManagerException If the date string is not a valid date in the format "dd/MM/yyyy".
-     */
-    public static void checkIfValidDate(String date) throws TaskManagerException {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate.parse(date, formatter);
-        } catch (DateTimeParseException e) {
-            throw new TaskManagerException(INVALID_DATE_FORMAT_MESSAGE);
-        }
-    }
-
-
 
     /**
      * Method that checks if the date is in the current month shown by the calendar.

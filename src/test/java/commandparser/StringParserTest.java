@@ -1,7 +1,8 @@
 package commandparser;
 
-import data.TaskManagerException;
 import org.junit.jupiter.api.Test;
+
+import data.exceptions.TaskManagerException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

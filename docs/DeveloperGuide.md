@@ -13,6 +13,7 @@
     * [Update Task Method](#update-task-method)
     * [Adding Tasks](#adding-tasks)
     * [Deleting Tasks](#deleting-tasks)
+    * [Managing Free Time](#managing-free-time)
     * [Interfacing with Storage class](#interfacing-with-storage-class)
   * [Storage component](#storage-component)
   * [CommandHandler Component](#commandhandler-component)
@@ -400,8 +401,8 @@ The `addTask` method orchestrates the creation and addition of a new task to the
 #### Method Signature
 
 ```
-public static void addTask(LocalDate date, String taskDescription, TaskType taskType,
-        String[] dates, String[] times) throws TaskManagerException {
+public static void addTask(LocalDate date, String taskDescription, TaskType taskType, String[] dates, 
+        String[] times) throws TaskManagerException
 ```
 
 #### Parameters
@@ -522,6 +523,98 @@ public static void deleteAllTasksOnDate (TaskManager taskManager,
 #### Method Functionality
 - Gets the LocalDate requested by the caller.
 - Calls the `deleteTask` method on all tasks on the date.
+
+<a name="managing-free-time"></a>
+
+### Managing Free Time
+
+<a name="free-times-manager-method"></a>
+
+### Free Times Manager Method
+
+The `freeTimesManager` method facilitates the identification and display of free time slots on a specific date. It is a crucial feature for users to efficiently plan their schedules by identifying available time intervals.
+
+#### Method Signature
+
+```
+public void freeTimesManager(WeekView weekView, MonthView monthView, 
+        boolean inMonthView, String day)
+        throws TaskManagerException, DateTimeParseException
+```
+
+#### Parameters
+
+- `weekView`: The WeekView object for finding the date.
+- `monthView`: The MonthView object for finding the date.
+- `inMonthView`: A boolean indicating whether the view is in month view or not.
+- `day`: The day of the task to show free times for.
+
+#### Exceptions
+
+- `TaskManagerException`: If there is an error in managing tasks.
+- `DateTimeParseException`: If there is an error parsing the date.
+
+#### Method Functionality
+
+1. Converts the day parameter to a `LocalDate` object.
+2. Retrieves the list of events for the specified date.
+3. Calculates the free time slots based on the events for the day.
+4. Prints the identified free time slots for the specified date.
+
+<a name="retrieving-free-time-slots"></a>
+
+### Retrieving Free Time Slots
+
+The `getFreeTimeSlots` method retrieves all free time slots for a specific date based on the events scheduled for that day.
+
+#### Method Signature
+
+```
+public List<String> getFreeTimeSlots(List<Task> events, 
+        LocalDate currentDate)
+```
+
+#### Parameters
+
+- `events`: A list of Event tasks for the date.
+- `currentDate`: The date to show free times for.
+
+#### Return Value
+
+A list of free time slots for the given date.
+
+#### Method Functionality
+
+1. Initializes the start and end times of the day.
+2. Sorts the events by start time and date.
+3. Iterates through the events and calculates free time slots between events.
+4. Adds the calculated free time slots to the list.
+5. Returns the list of free time slots.
+
+<a name="printing-free-time-slots"></a>
+
+### Printing Free Time Slots
+
+The `printFreeTimeSlots` method prints the identified free time slots for a specific date.
+
+#### Method Signature
+
+```
+public void printFreeTimeSlots(List<String> freeTimeSlots,
+        LocalDate startDate)
+```
+
+#### Parameters
+
+- `freeTimeSlots`: A list of free time slots for the date.
+- `startDate`: The date to show free times for.
+
+#### Method Functionality
+
+1. Prints the date for which free time slots are being displayed.
+2. Iterates through the list of free time slots and prints each slot.
+
+By utilizing these methods, users can efficiently identify and utilize their available free time slots, aiding in better time management and scheduling.
 
 ### Interfacing with Storage class
 #### `addTasksFromFile` method

@@ -1,8 +1,8 @@
 package storage;
 
-import data.StorageFileException;
+import data.exceptions.StorageFileException;
+import data.exceptions.TaskManagerException;
 import data.Task;
-import data.TaskManagerException;
 import data.TaskPriorityLevel;
 import data.TaskType;
 
@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static data.StorageFileException.checkStorageTextDateFormat;
+import static data.exceptions.StorageFileException.checkStorageTextDateFormat;
+
 import static data.TaskManager.addTask;
 import static data.TaskManager.getDayTasks;
 import static data.TaskManager.parseTaskType;
